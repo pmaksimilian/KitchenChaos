@@ -1,11 +1,24 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class CuttingCounter : BaseCounter {
 
+    // ustvarimo event za progress (podrobnejša razlaga v Player)
+    public event EventHandler<OnProgressChangedEventArgs> OnProgressChange;
+    public class OnProgressChangedEventArgs : EventArgs {
+        public float progressNormalized;
+    }
+
+    // event za sproženje animacije
+    public event EventHandler OnCut;
+
     // V editorju dodamo vse možne recepte v ta field
     [SerializeField] private CuttingRecipeSO[] cuttingRecipeSOArray;
+
+    // Zaradi logike večih korakov (več pritiskov za rezanje)
+    private int cuttingProgress;
 
     // Navadna Interact funkcija je enaka, kot pri ClearCounter, se pravi odlaganje in prijemanje, z enim dodatnim preverjanjem
     public override void Interact(Player player) {
@@ -14,6 +27,15 @@ public class CuttingCounter : BaseCounter {
                 // preko playerja in njegovega kitchenObjecta preverimo, če je input ustrezen za rezanje
                 if(HasRecipeWithInput(player.GetKitchenObject().GetKitchenObjectSO())) {
                     player.GetKitchenObject().SetKitchenObjectParent(this);
+
+                    // nastavimo progress, ki ga povečamo ob vsakem dejanju in sprožimo event
+                    cuttingProgress = 0;
+
+                    CuttingRecipeSO cuttingRecipeSO = GetCuttingRecipeSOWithInput(GetKitchenObject().GetKitchenObjectSO());
+
+                    OnProgressChange?.Invoke(this, new OnProgressChangedEventArgs {
+                        progressNormalized = (float)cuttingProgress / cuttingRecipeSO.cuttingProgressMax
+                    });
                 }
             }
         } else {
@@ -27,34 +49,55 @@ public class CuttingCounter : BaseCounter {
     public override void InteractAlternate(Player player) {
         // Če counter ima objekt, ki je primeren za rezanje, ga destroyamo s klicem funkcije od KitchenObjecta in ustvarimo novega (narezanega)
         if (HasKitchenObject() && HasRecipeWithInput(GetKitchenObject().GetKitchenObjectSO())) {
-            // Pred tem najdemo ustrezen output. Preko kitchenObjecta na tem counterju dostopma do ustreznega SO in ga podamo kot argument
-            KitchenObjectSO outputKitchenObjectSO = GetOuputForInput(GetKitchenObject().GetKitchenObjectSO());
+            // Logika za več korakov rezanja s sprožitvijo eventa
+            cuttingProgress++;
 
-            GetKitchenObject().DestroySelf();
+            OnCut?.Invoke(this, EventArgs.Empty);
 
-            // Kličemo funkcijo v "KitchenObject" skripti. Ker je static jo kličemo preko imena classa
-            KitchenObject.SpawnKitchenObject(outputKitchenObjectSO, this);
+            CuttingRecipeSO cuttingRecipeSO = GetCuttingRecipeSOWithInput(GetKitchenObject().GetKitchenObjectSO());
+
+            OnProgressChange?.Invoke(this, new OnProgressChangedEventArgs {
+                progressNormalized = (float)cuttingProgress / cuttingRecipeSO.cuttingProgressMax
+            });
+
+            // rezanje zaključimo šele, ko je izvedeno dovolj korakov
+            if(cuttingProgress >= cuttingRecipeSO.cuttingProgressMax) {
+
+                // Najdemo ustrezen output. Preko kitchenObjecta na tem counterju dostopma do ustreznega SO in ga podamo kot argument
+                KitchenObjectSO outputKitchenObjectSO = GetOuputForInput(GetKitchenObject().GetKitchenObjectSO());
+
+                GetKitchenObject().DestroySelf();
+
+                // Kličemo funkcijo v "KitchenObject" skripti. Ker je static jo kličemo preko imena classa
+                KitchenObject.SpawnKitchenObject(outputKitchenObjectSO, this);
+            }
+
         }
     }
 
     // preverjamo, ali živilo obstaja v arrayu receptov
     private bool HasRecipeWithInput(KitchenObjectSO inputKitchenObjectSO) {
-        foreach (CuttingRecipeSO cuttingRecipeSO in cuttingRecipeSOArray) {
-            if (cuttingRecipeSO.input == inputKitchenObjectSO) {
-                return true;
-            }
-        }
-        return false;
+        CuttingRecipeSO cuttingRecipeSO = GetCuttingRecipeSOWithInput(inputKitchenObjectSO);
+        return cuttingRecipeSO != null;
     }
 
     // Funkcija, ki v arrayu najde primeren input in vrne ujemajoč output
     private KitchenObjectSO GetOuputForInput(KitchenObjectSO inputKitchenObjectSO) {
+        CuttingRecipeSO cuttingRecipeSO = GetCuttingRecipeSOWithInput(inputKitchenObjectSO);
+        if (cuttingRecipeSO != null) {
+            return cuttingRecipeSO.output;
+        } else {
+            return null;
+        }
+    }
+
+    // Poenotena funkcija, ki vrne cel najden SO
+    private CuttingRecipeSO GetCuttingRecipeSOWithInput(KitchenObjectSO inputKitchenObjectSO) {
         foreach (CuttingRecipeSO cuttingRecipeSO in cuttingRecipeSOArray) {
             if (cuttingRecipeSO.input == inputKitchenObjectSO) {
-                return cuttingRecipeSO.output;
+                return cuttingRecipeSO;
             }
         }
         return null;
     }
-
 }

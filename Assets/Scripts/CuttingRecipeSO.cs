@@ -10,5 +10,6 @@ public class CuttingRecipeSO : ScriptableObject {
     // Ponazarja dejanje, input so cela živila, output razrezana
     public KitchenObjectSO input;
     public KitchenObjectSO output;
+    public int cuttingProgressMax;
 
 }

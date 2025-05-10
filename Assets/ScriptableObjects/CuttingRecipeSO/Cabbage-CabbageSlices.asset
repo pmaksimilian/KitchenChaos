@@ -10,7 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 98af8731e1717d44297ebd555a1cf392, type: 3}
-  m_Name: Tomato-TomatoSlices
+  m_Name: Cabbage-CabbageSlices
   m_EditorClassIdentifier: 
-  input: {fileID: 11400000, guid: c579675e6690a7a4bb4ce80c5790c45f, type: 2}
-  output: {fileID: 11400000, guid: c1659b6409f10334d97eb7d7df9bec20, type: 2}
+  input: {fileID: 11400000, guid: 3c914738eac93684b9d09e102482cdb6, type: 2}
+  output: {fileID: 11400000, guid: ddc16975a709257429f6bc8831273d5a, type: 2}
+  cuttingProgressMax: 4
