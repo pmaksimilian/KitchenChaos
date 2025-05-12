@@ -1,8 +1,15 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlateKitchenObject : KitchenObject {
+
+    // ustvarjanje eventa, da je bila sestavina (in katera) dodana na ta krožnik
+    public event EventHandler<OnIngredientAddedEventArgs> OnIngredientAdded;
+    public class OnIngredientAddedEventArgs : EventArgs {
+        public KitchenObjectSO kitchenObjectSO;
+    }
 
     // seznam objektov, ki gredo lahko na krožnik
     [SerializeField] private List<KitchenObjectSO> validKitchenObjectSOList;
@@ -24,6 +31,11 @@ public class PlateKitchenObject : KitchenObject {
             return false;
         } else {
             kitchenObjectSOList.Add(kitchenObjectSO);
+
+            // sprožimo tudi event
+            OnIngredientAdded?.Invoke(this, new OnIngredientAddedEventArgs {
+                kitchenObjectSO = kitchenObjectSO
+            });
             return true;
         }
     }
