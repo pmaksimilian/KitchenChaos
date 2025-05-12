@@ -20,7 +20,6 @@ public class PlatesCounter : BaseCounter {
 
     private void Update() {
         spawnPlateTimer += Time.deltaTime;
-        Debug.Log(spawnPlateTimer);
         if (spawnPlateTimer > spawnPlateTimerMax) {
             // ko mine timer, ga nastavimo na 0 in preverimo, če lahko naložimo nov krožnik
             spawnPlateTimer = 0f;

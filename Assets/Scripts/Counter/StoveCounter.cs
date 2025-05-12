@@ -133,7 +133,28 @@ public class StoveCounter : BaseCounter, IHasProgress {
                 }
             }
         } else {
-            if (!player.HasKitchenObject()) {
+            if (player.HasKitchenObject()) {
+                // preverimo ali je ta playerjev objekt krožnik
+                if (player.GetKitchenObject().TryGetPlate(out PlateKitchenObject plateKitchenObject)) {
+                    // Torej v primeru, če na counterju je objekt in če igralec ima krožnik, ta objekt dodamo v List na objektu krožnika in ga tukaj destroyamo
+                    if (plateKitchenObject.TryAddIngredient(GetKitchenObject().GetKitchenObjectSO())) {
+                        GetKitchenObject().DestroySelf();
+
+                        // ponovimo isto logiko kot je spodaj, kjer player direktno pobere objekt
+                        state = State.Idle;
+
+                        // sprožimo event
+                        OnStateChanged?.Invoke(this, new OnStateChangedEventArgs {
+                            state = state
+                        });
+
+                        // če player pobere objekt se progress bar ponastavi
+                        OnProgressChange?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs {
+                            progressNormalized = 0f
+                        });
+                    }
+                }
+            } else {
                 GetKitchenObject().SetKitchenObjectParent(player);
                 state = State.Idle;
 

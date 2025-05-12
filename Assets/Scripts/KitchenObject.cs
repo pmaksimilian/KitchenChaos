@@ -53,6 +53,22 @@ public class KitchenObject : MonoBehaviour {
         Destroy(gameObject);
     }
 
+    // "out" pomeni da bomo vrnili tudi ta parameter, zato ga moramo vedno nastaviti
+    public bool TryGetPlate(out PlateKitchenObject plateKitchenObject) {
+        // preverimo, ali je ta objekt tipa PlateKitchenObject
+        if (this is PlateKitchenObject) {
+            // "as" casta objekt v tem tipu, če ni uspešno se vrne null
+            // druga opcija direktno v if-u:
+            // if (this is PlateKitchenObject plateKitchenObject)
+            plateKitchenObject = this as PlateKitchenObject;
+            return true;
+            
+        } else {
+            plateKitchenObject = null;
+            return false;
+        }
+    }
+
 
     // V tem primeru gre za metodo static, kar pomeni, da pripada direktno classu KitchenObject in ne posamezni instanci. Zato se jo tudi kliče preko imena classa torej KitchenObject.SpawnKitchenObject()
     // Funkcija ustvari nov KitchenObject. Za to potrebuje argumenta katerega in kje

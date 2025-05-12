@@ -37,7 +37,15 @@ public class CuttingCounter : BaseCounter, IHasProgress {
                 }
             }
         } else {
-            if (!player.HasKitchenObject()) {
+            if (player.HasKitchenObject()) {
+                // preverimo ali je playerjev objekt krožnik
+                if (player.GetKitchenObject().TryGetPlate(out PlateKitchenObject plateKitchenObject)) {
+                    // Torej v primeru, če na counterju je objekt in če igralec ima krožnik, ta objekt dodamo v List na objektu krožnika in ga tukaj destroyamo
+                    if (plateKitchenObject.TryAddIngredient(GetKitchenObject().GetKitchenObjectSO())) {
+                        GetKitchenObject().DestroySelf();
+                    }
+                }
+            } else {
                 GetKitchenObject().SetKitchenObjectParent(player);
             }
         }
