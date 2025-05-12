@@ -328,4 +328,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9162cd7876e34049809770356b110d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  counterTopPoint: {fileID: 0}
+  counterTopPoint: {fileID: 9056050172173313372}
+--- !u!4 &9056050172173313372 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1111529187522810834, guid: 2eb5bb9643c7c8d4da9a10dba2be1954,
+    type: 3}
+  m_PrefabInstance: {fileID: 8269027068084745870}
+  m_PrefabAsset: {fileID: 0}

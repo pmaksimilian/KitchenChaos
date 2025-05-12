@@ -3,13 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CuttingCounter : BaseCounter {
+public class CuttingCounter : BaseCounter, IHasProgress {
 
     // ustvarimo event za progress (podrobnejša razlaga v Player)
-    public event EventHandler<OnProgressChangedEventArgs> OnProgressChange;
-    public class OnProgressChangedEventArgs : EventArgs {
-        public float progressNormalized;
-    }
+    // kličemo tip argumentov, ki je definiran v IHasProgress
+    public event EventHandler<IHasProgress.OnProgressChangedEventArgs> OnProgressChange;
 
     // event za sproženje animacije
     public event EventHandler OnCut;
@@ -33,7 +31,7 @@ public class CuttingCounter : BaseCounter {
 
                     CuttingRecipeSO cuttingRecipeSO = GetCuttingRecipeSOWithInput(GetKitchenObject().GetKitchenObjectSO());
 
-                    OnProgressChange?.Invoke(this, new OnProgressChangedEventArgs {
+                    OnProgressChange?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs {
                         progressNormalized = (float)cuttingProgress / cuttingRecipeSO.cuttingProgressMax
                     });
                 }
@@ -56,15 +54,15 @@ public class CuttingCounter : BaseCounter {
 
             CuttingRecipeSO cuttingRecipeSO = GetCuttingRecipeSOWithInput(GetKitchenObject().GetKitchenObjectSO());
 
-            OnProgressChange?.Invoke(this, new OnProgressChangedEventArgs {
+            OnProgressChange?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs {
                 progressNormalized = (float)cuttingProgress / cuttingRecipeSO.cuttingProgressMax
             });
 
             // rezanje zaključimo šele, ko je izvedeno dovolj korakov
             if(cuttingProgress >= cuttingRecipeSO.cuttingProgressMax) {
 
-                // Najdemo ustrezen output. Preko kitchenObjecta na tem counterju dostopma do ustreznega SO in ga podamo kot argument
-                KitchenObjectSO outputKitchenObjectSO = GetOuputForInput(GetKitchenObject().GetKitchenObjectSO());
+                // Najdemo ustrezen output. Preko kitchenObjecta na tem counterju dostopamo do ustreznega SO in ga podamo kot argument
+                KitchenObjectSO outputKitchenObjectSO = GetOutputForInput(GetKitchenObject().GetKitchenObjectSO());
 
                 GetKitchenObject().DestroySelf();
 
@@ -82,7 +80,7 @@ public class CuttingCounter : BaseCounter {
     }
 
     // Funkcija, ki v arrayu najde primeren input in vrne ujemajoč output
-    private KitchenObjectSO GetOuputForInput(KitchenObjectSO inputKitchenObjectSO) {
+    private KitchenObjectSO GetOutputForInput(KitchenObjectSO inputKitchenObjectSO) {
         CuttingRecipeSO cuttingRecipeSO = GetCuttingRecipeSOWithInput(inputKitchenObjectSO);
         if (cuttingRecipeSO != null) {
             return cuttingRecipeSO.output;
