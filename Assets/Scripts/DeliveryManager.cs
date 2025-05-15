@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,6 +8,9 @@ public class DeliveryManager : MonoBehaviour {
     // singleton, ker bo samo en DeliveryManager
     // da lahko dostopodamo do njega iz DeliveryCounter
     public static DeliveryManager Instance {get; private set;}
+
+    // event ob dodajanju receptov
+    public event EventHandler OnRecipeListChange;
 
     // seznam vseh receptov
     [SerializeField] private RecipeListSO recipeListSO;
@@ -35,9 +39,12 @@ public class DeliveryManager : MonoBehaviour {
             // receptov je lahko največ waitingRecipesMax
             if (waitingRecipeSOList.Count < waitingRecipesMax) {
                 // pokličemo random recept iz seznama vseh receptov in ga dodamo na seznam čakajočih
-                RecipeSO waitingRecipeSO = recipeListSO.recipeSOList[Random.Range(0, recipeListSO.recipeSOList.Count)];
-                Debug.Log(waitingRecipeSO);
+                // ker je uvožen System moramo navesti tudi class v UnityEngine.Random, saj imata oba Random in ne ve katerga klicati
+                RecipeSO waitingRecipeSO = recipeListSO.recipeSOList[UnityEngine.Random.Range(0, recipeListSO.recipeSOList.Count)];
+
                 waitingRecipeSOList.Add(waitingRecipeSO);
+
+                OnRecipeListChange?.Invoke(this, EventArgs.Empty);
             }
 
         }
@@ -76,16 +83,17 @@ public class DeliveryManager : MonoBehaviour {
 
                 // če smo našli recept lahko prekinemo z izvajanjem for zanke
                 if (plateContentsMatchesRecipe) {
-                    Debug.Log("Player delivered the recipe");
                     // odstranimo recept iz seznama čakajočih
                     waitingRecipeSOList.RemoveAt(i);
+                    OnRecipeListChange?.Invoke(this, EventArgs.Empty);
                     return;
                 }
             }
         }
+    }
 
-        // Če pridemo do sem, recepta nismo našli
-        Debug.Log("Player did NOT delivered the correct recipe");
+    public List<RecipeSO> GetWaitingRecipeSOList() {
+        return waitingRecipeSOList;
     }
 
 }
