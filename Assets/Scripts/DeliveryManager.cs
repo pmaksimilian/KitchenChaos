@@ -27,6 +27,8 @@ public class DeliveryManager : MonoBehaviour {
 
     private int waitingRecipesMax = 4;
 
+    private int successfulRecipesAmount;
+
     private void Awake() {
         Instance = this;
 
@@ -86,6 +88,7 @@ public class DeliveryManager : MonoBehaviour {
 
                 // če smo našli recept lahko prekinemo z izvajanjem for zanke
                 if (plateContentsMatchesRecipe) {
+                    successfulRecipesAmount++;
                     // odstranimo recept iz seznama čakajočih
                     waitingRecipeSOList.RemoveAt(i);
                     OnRecipeCompleted?.Invoke(this, EventArgs.Empty);
@@ -99,6 +102,10 @@ public class DeliveryManager : MonoBehaviour {
 
     public List<RecipeSO> GetWaitingRecipeSOList() {
         return waitingRecipeSOList;
+    }
+
+    public int GetSuccessfulRecipesAmount() {
+        return successfulRecipesAmount;
     }
 
 }
