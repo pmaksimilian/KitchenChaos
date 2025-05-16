@@ -64,6 +64,8 @@ public class Player : MonoBehaviour, IKitchenObjectParent {
 
     // funkcije morajo imeti enake argumente kot tiste, katere poslušajo
     private void GameInput_OnInteractAction(object sender, System.EventArgs e) {
+        if (!GameManager.Instance.IsGamePlaying()) return;
+
         // Preverimo, če je obstaja counter, s katerim imamo lahko interakcijo (to se nastavlja v HandleInteractions)
         if (selectedCounter != null) {
 
@@ -72,6 +74,8 @@ public class Player : MonoBehaviour, IKitchenObjectParent {
         }
     }
     private void GameInput_OnInteractAlternateAction(object sender, System.EventArgs e) {
+        if (!GameManager.Instance.IsGamePlaying()) return;
+
         if (selectedCounter != null) {
             selectedCounter.InteractAlternate(this);
         }
