@@ -10,7 +10,10 @@ public class DeliveryManager : MonoBehaviour {
     public static DeliveryManager Instance {get; private set;}
 
     // event ob dodajanju receptov
-    public event EventHandler OnRecipeListChange;
+    public event EventHandler OnRecipeSpawned;
+    public event EventHandler OnRecipeCompleted;
+    public event EventHandler OnRecipeSuccess;
+    public event EventHandler OnRecipeFailed;
 
     // seznam vseh receptov
     [SerializeField] private RecipeListSO recipeListSO;
@@ -44,7 +47,7 @@ public class DeliveryManager : MonoBehaviour {
 
                 waitingRecipeSOList.Add(waitingRecipeSO);
 
-                OnRecipeListChange?.Invoke(this, EventArgs.Empty);
+                OnRecipeSpawned?.Invoke(this, EventArgs.Empty);
             }
 
         }
@@ -85,11 +88,13 @@ public class DeliveryManager : MonoBehaviour {
                 if (plateContentsMatchesRecipe) {
                     // odstranimo recept iz seznama čakajočih
                     waitingRecipeSOList.RemoveAt(i);
-                    OnRecipeListChange?.Invoke(this, EventArgs.Empty);
+                    OnRecipeCompleted?.Invoke(this, EventArgs.Empty);
+                    OnRecipeSuccess?.Invoke(this, EventArgs.Empty);
                     return;
                 }
             }
         }
+        OnRecipeFailed?.Invoke(this, EventArgs.Empty);
     }
 
     public List<RecipeSO> GetWaitingRecipeSOList() {

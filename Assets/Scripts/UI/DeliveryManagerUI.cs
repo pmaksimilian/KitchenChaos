@@ -13,12 +13,16 @@ public class DeliveryManagerUI : MonoBehaviour {
 
     // hendlanje eventov
     private void Start() {
-        DeliveryManager.Instance.OnRecipeListChange += DeliveryManager_OnRecipeListChange;
+        DeliveryManager.Instance.OnRecipeSpawned += DeliveryManager_OnRecipeSpawned;
+        DeliveryManager.Instance.OnRecipeCompleted += DeliveryManager_OnRecipeCompleted;
 
         UpdateVisual();
     }
 
-    private void DeliveryManager_OnRecipeListChange(object sender, System.EventArgs e) {
+    private void DeliveryManager_OnRecipeSpawned(object sender, System.EventArgs e) {
+        UpdateVisual();
+    }
+    private void DeliveryManager_OnRecipeCompleted(object sender, System.EventArgs e) {
         UpdateVisual();
     }
 

@@ -12,6 +12,9 @@ public class CuttingCounter : BaseCounter, IHasProgress {
     // event za sproženje animacije
     public event EventHandler OnCut;
 
+    // za zvok ustvarimo static event, da se naredi samo en na class, ne za vsako instanco (čeprav bo v resnici delal isto kot OnCut)
+    public static event EventHandler OnAnyCut;
+
     // V editorju dodamo vse možne recepte v ta field
     [SerializeField] private CuttingRecipeSO[] cuttingRecipeSOArray;
 
@@ -59,6 +62,7 @@ public class CuttingCounter : BaseCounter, IHasProgress {
             cuttingProgress++;
 
             OnCut?.Invoke(this, EventArgs.Empty);
+            OnAnyCut?.Invoke(this, EventArgs.Empty);
 
             CuttingRecipeSO cuttingRecipeSO = GetCuttingRecipeSOWithInput(GetKitchenObject().GetKitchenObjectSO());
 

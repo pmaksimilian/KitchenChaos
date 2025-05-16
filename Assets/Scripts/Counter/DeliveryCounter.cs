@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class DeliveryCounter : BaseCounter {
 
+    public static DeliveryCounter Instance { get; private set; }
+
+    private void Start() {
+        Instance = this;
+    }
+
     public override void Interact (Player player) {
         // Preverimo ali player ima objekt in ali je ta objekt krožnik
         if (player.HasKitchenObject() && player.GetKitchenObject().TryGetPlate(out PlateKitchenObject plateKitchenObject)) {

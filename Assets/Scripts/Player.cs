@@ -20,6 +20,9 @@ public class Player : MonoBehaviour, IKitchenObjectParent {
         public BaseCounter selectedCounter;
     }
 
+    // event za sprožitev zvoka
+    public event EventHandler OnPickedSomething;
+
     // [SerializeField] poskrbi, da se tudi private polja prikažejo v editorju. Public polja se prikažejo tudi brez tega. To je polje za hitrost premikanja.
     [SerializeField] private float moveSpeed = 7f;
 
@@ -212,6 +215,10 @@ public class Player : MonoBehaviour, IKitchenObjectParent {
     // setter za kitchenObject na playerju
     public void SetKitchenObject(KitchenObject kitchenObject) {
         this.kitchenObject = kitchenObject;
+
+        if (kitchenObject != null) {
+            OnPickedSomething?.Invoke(this, EventArgs.Empty);
+        }
     }
 
     // getter za kitchenObject na tem obplayerjujektu

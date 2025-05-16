@@ -1,9 +1,13 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 // S tem urejamo inheritance, vsi ostali counterji bodo podaljšek tega
 public class BaseCounter : MonoBehaviour, IKitchenObjectParent {
+
+    // za zvok ustvarimo static event, da se naredi samo en na class, ne za vsako instanco
+    public static event EventHandler OnAnyObjectPlacedHere;
 
     // definiramo preprost Transfom za pult, samo točka na katero se stvari nalagajo
     [SerializeField] private Transform counterTopPoint;
@@ -30,6 +34,10 @@ public class BaseCounter : MonoBehaviour, IKitchenObjectParent {
     // setter za kitchenObject na counterju
     public void SetKitchenObject(KitchenObject kitchenObject) {
         this.kitchenObject = kitchenObject;
+
+        if (kitchenObject != null) {
+            OnAnyObjectPlacedHere?.Invoke(this, EventArgs.Empty);
+        }
     }
 
     // getter za kitchenObject na counterju
