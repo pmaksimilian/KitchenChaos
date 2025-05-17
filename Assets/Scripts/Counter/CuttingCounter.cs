@@ -14,6 +14,11 @@ public class CuttingCounter : BaseCounter, IHasProgress {
 
     // za zvok ustvarimo static event, da se naredi samo en na class, ne za vsako instanco (čeprav bo v resnici delal isto kot OnCut)
     public static event EventHandler OnAnyCut;
+    // funkcija za reset static podatkov, klicana iz ResetStaticDataManager
+    // new ker ista funkcija že obstaja na BaseCounter
+    new public static void ResetStaticData() {
+        OnAnyCut = null;
+    }
 
     // V editorju dodamo vse možne recepte v ta field
     [SerializeField] private CuttingRecipeSO[] cuttingRecipeSOArray;
@@ -62,6 +67,9 @@ public class CuttingCounter : BaseCounter, IHasProgress {
             cuttingProgress++;
 
             OnCut?.Invoke(this, EventArgs.Empty);
+
+            // izpis števila poslušalcev tega eventa, pomemben za debugiranje težave, rešene v ResetStaticDataManager
+            Debug.Log(OnAnyCut.GetInvocationList().Length);
             OnAnyCut?.Invoke(this, EventArgs.Empty);
 
             CuttingRecipeSO cuttingRecipeSO = GetCuttingRecipeSOWithInput(GetKitchenObject().GetKitchenObjectSO());

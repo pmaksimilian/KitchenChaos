@@ -22,5 +22,8 @@ public class MainMenuUI : MonoBehaviour {
         quitButton.onClick.AddListener(() => {
             Application.Quit();
         });
+
+        // reset timeScale, ker če pridemo sem iz game pause potem bi še vedno vse ostalo pri miru
+        Time.timeScale = 1f;
     }
 }

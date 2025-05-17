@@ -8,6 +8,10 @@ public class BaseCounter : MonoBehaviour, IKitchenObjectParent {
 
     // za zvok ustvarimo static event, da se naredi samo en na class, ne za vsako instanco
     public static event EventHandler OnAnyObjectPlacedHere;
+    // funkcija za reset static podatkov, klicana iz ResetStaticDataManager
+    public static void ResetStaticData() {
+        OnAnyObjectPlacedHere = null;
+    }
 
     // definiramo preprost Transfom za pult, samo točka na katero se stvari nalagajo
     [SerializeField] private Transform counterTopPoint;

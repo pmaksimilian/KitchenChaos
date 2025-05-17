@@ -4,17 +4,22 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class GameInput : MonoBehaviour {
+
+    public static GameInput Instance { get; private set; }
     
     // Za EventHandler je potrebno dodati using System;
     // Gre za standardne C# evente v obliki void SomeMethod(object sender, EventArgs e)
     // Je način, da ostale skripte lahko "poslušajo", če se nekaj zgodi
     public event EventHandler OnInteractAction;
     public event EventHandler OnInteractAlternateAction;
+    public event EventHandler OnPauseAction;
 
     // spremenljivka za shranjevanje PlayerInputActions
     private PlayerInputActions playerInputActions;
 
     private void Awake() {
+        Instance = this;
+
         // generiranje instance classa PlayerInputActions iz Input System package
         playerInputActions = new PlayerInputActions();
 
@@ -27,6 +32,19 @@ public class GameInput : MonoBehaviour {
         // canceled: When the input is released or interrupted
         playerInputActions.Player.Interact.performed += Interact_performed;
         playerInputActions.Player.InteractAlternate.performed += InteractAlternate_performed;
+        playerInputActions.Player.Pause.performed += Pause_performed;
+    }
+
+    private void OnDestroy() {
+        // ko zapustimo GameScene se objekt GameInput destroya, ne destroya pa se class PlayerInputActions();
+        // zato pride do napake ko pridemo nazaj na GameScene, saj imam dva tovrstna classa in star še vedno posluša dogodke,vendar nima več funkcij
+        // rešitvi sta dve, tukaj implementirani obe
+        // unsubscribamo se od od funkcij:
+        playerInputActions.Player.Interact.performed -= Interact_performed;
+        playerInputActions.Player.InteractAlternate.performed -= InteractAlternate_performed;
+        playerInputActions.Player.Pause.performed -= Pause_performed;
+        // in destroyamo tudi PlayerInputActions
+        playerInputActions.Dispose();
     }
 
     // Ko so akcije zgoraj sprožene, se kličeta spodnji funkciji
@@ -42,6 +60,10 @@ public class GameInput : MonoBehaviour {
 
     private void InteractAlternate_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj) {
         OnInteractAlternateAction?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void Pause_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj) {
+        OnPauseAction?.Invoke(this, EventArgs.Empty);
     }
 
     // funkcija za primerno ureditev inputov za premikanje
