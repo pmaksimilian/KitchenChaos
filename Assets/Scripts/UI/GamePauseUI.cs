@@ -19,7 +19,8 @@ public class GamePauseUI : MonoBehaviour {
         });
 
         optionsButton.onClick.AddListener(() => {
-            OptionsUI.Instance.Show();
+            Hide();
+            OptionsUI.Instance.Show(Show);
         });
     }
 
@@ -40,6 +41,9 @@ public class GamePauseUI : MonoBehaviour {
 
     private void Show() {
         gameObject.SetActive(true);
+
+        // ob prikazu izberemo gumb, da lahko z njimi upravljamo s tipkovnico ali gamepadom
+        resumeButton.Select();
     }
     private void Hide() {
         gameObject.SetActive(false);

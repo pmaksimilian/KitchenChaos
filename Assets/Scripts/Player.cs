@@ -163,7 +163,10 @@ public class Player : MonoBehaviour, IKitchenObjectParent {
             // Normaliziramo, da se izenači hitrost z normalnim premikanjem (v diagonalnem premikanju je namreč manjša od 1)
             // moveDir.x != 0 preveri, če smo se sploh poizkušali premikati v to smer
             Vector3 moveDirX = new Vector3(moveDir.x, 0, 0).normalized;
-            canMove = moveDir.x != 0 && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDirX, moveDistance);
+            // canMove = moveDir.x != 0 && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDirX, moveDistance);
+
+            // zaradi gamepada smo moveDir.x != 0 spremenili v (moveDir.x < -.5f || moveDir.x > +.5f)
+            canMove = (moveDir.x < -.5f || moveDir.x > +.5f) && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDirX, moveDistance); 
 
             // Če se lahko premikamo, spremenimo smer premikanja.
             if (canMove) {
@@ -171,7 +174,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent {
             } else {
                 // Če ne, preverimo še os Z, na enak način
                 Vector3 moveDirZ = new Vector3(0, 0, moveDir.z).normalized;
-                canMove = moveDir.z != 0 && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDirZ, moveDistance);
+                canMove = (moveDir.z < -.5f || moveDir.z > +.5f) && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDirZ, moveDistance);
 
                 if (canMove) {
                     moveDir = moveDirZ;

@@ -138,6 +138,7 @@ public class GameInput : MonoBehaviour {
     }
 
     // Action je C# delegate
+    // uvoziti je potrebno System
     // ko kličemo to funkcijo, se izvede funkcijo, ki smo jo podali kot argument (poglej OptionsUI)
     public void RebindBinding(Binding binding, Action onActionRebound) {
         playerInputActions.Player.Disable();
