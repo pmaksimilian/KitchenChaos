@@ -42,7 +42,7 @@ public class DeliveryManager : MonoBehaviour {
             spawnRecipeTimer = spawnRecipeTimerMax;
 
             // receptov je lahko največ waitingRecipesMax
-            if (waitingRecipeSOList.Count < waitingRecipesMax) {
+            if (GameManager.Instance.IsGamePlaying() && waitingRecipeSOList.Count < waitingRecipesMax) {
                 // pokličemo random recept iz seznama vseh receptov in ga dodamo na seznam čakajočih
                 // ker je uvožen System moramo navesti tudi class v UnityEngine.Random, saj imata oba Random in ne ve katerga klicati
                 RecipeSO waitingRecipeSO = recipeListSO.recipeSOList[UnityEngine.Random.Range(0, recipeListSO.recipeSOList.Count)];

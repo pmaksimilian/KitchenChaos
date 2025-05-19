@@ -26,7 +26,7 @@ public class PlatesCounter : BaseCounter {
 
             // tukaj pohendlamo samo število naloženih krožnikov, vizualni prikaz je v ločeni skripti
             // ne bomo dejansko naložili krožnika kot kitchen objecta, samo vizualni prikaz, spawna se, ko ga igralec zagrabi
-            if (platesSpawnedAmount < platesSpawnedAmountMax) {
+            if (GameManager.Instance.IsGamePlaying() && platesSpawnedAmount < platesSpawnedAmountMax) {
                 platesSpawnedAmount++;
                 OnPlateSpawned?.Invoke(this, EventArgs.Empty);
             }
